@@ -1,21 +1,24 @@
 const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "biblio",
+  host: localhost,
+  user: oui,
+  password: oui,
+  database: biblio,
 });
 
 db.connect((err) => {
   if (err) {
     console.error("Error connecting to the database: " + err.stack);
-    return;
+    process.exit(1);
   }
   console.log("Connected to the database");
 });
@@ -27,11 +30,15 @@ app.get("/", (req, res) => {
 app.get("/user", (req, res) => {
   const sql = "SELECT * FROM user";
   db.query(sql, (err, data) => {
-    if (err) return res.json(err);
+    if (err) {
+      console.error("Error querying the database: " + err.stack);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
     return res.json(data);
   });
 });
 
-app.listen(8081, () => {
-  console.log("listening on port 8081");
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}`);
 });
