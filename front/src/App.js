@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Login from "./login";
+import Signup from "./signup";
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -31,6 +32,9 @@ const App = () => {
                   <button onClick={handleLogout}>Déconnexion</button>
                 </li>
               )}
+              <li>
+                <Link to="/signup">Inscription</Link>
+              </li>
             </ul>
           </nav>
         </header>
@@ -52,6 +56,7 @@ const App = () => {
             path="/login"
             element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
           />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
     </Router>

@@ -19,22 +19,20 @@ class DataManager {
         database: this.databaseName,
         port: this.port,
       });
-      try {
-        this.connection.connect((err) => {
-          if (err) {
-            console.error("Problème de connexion avec la base MySQL :", err);
-            console.error(err.message);
-            return;
-          }
-          console.log("Connecté à la base de données !");
-        });
-      } catch (err) {
-        console.log("Échec de connexion à la base de données.");
-      }
+
+      this.connection.connect((err) => {
+        if (err) {
+          console.error("Problème de connexion avec la base MySQL :", err);
+          console.error(err.message);
+          return;
+        }
+        console.log("Connecté à la base de données !");
+      });
     } catch (err) {
-      console.log("Échec de connexion à la base de données.");
+      console.log("Échec de connexion à la base de données.", err);
     }
   }
+
   Disconnect() {
     this.connection.end((err) => {
       if (err) {
@@ -44,5 +42,10 @@ class DataManager {
       console.log("Déconnexion de la base !");
     });
   }
+
+  query(sql, params, callback) {
+    this.connection.query(sql, params, callback);
+  }
 }
+
 module.exports = DataManager;
