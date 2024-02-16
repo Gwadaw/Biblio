@@ -10,6 +10,7 @@ import Col from "react-bootstrap/Col";
 const Login = () => {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
+  // eslint-disable-next-line
   const [error, setError] = useState("");
   const [redirection, setRedirection] = useState(false);
   const navigate = useNavigate();
@@ -49,7 +50,7 @@ const Login = () => {
   }
 
   return (
-    <Container>
+    <Container className="form">
       <Row className="justify-content-md-center">
         <Col xs={6}>
           <Form onSubmit={handleLogin}>

@@ -6,7 +6,7 @@ class DataManager {
     this.login = login;
     this.password = password;
     this.databaseName = databaseName;
-    this.port = 3307;
+    this.port = 3306;
     this.connection = null;
   }
 

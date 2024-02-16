@@ -1,13 +1,84 @@
-body {
+/* Reset des marges et paddings */
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Style de base pour le corps de la page */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #000000; /* Couleur de fond */
+  color: #ffffff; /* Couleur du texte principal */
+}
+
+/* Style pour le conteneur principal */
+.App {
+  max-width: 800px; /* Largeur maximale */
+  margin: 0 auto; /* Centrer le conteneur */
+  padding: 20px; /* Ajouter de l'espace intérieur */
+}
+
+/* Style pour l'en-tête */
+.App-header {
+  background-color: #000000; /* Couleur de fond */
+  padding: 20px; /* Ajouter de l'espace intérieur */
+  text-align: center; /* Centrer le texte */
+  color: #fff; /* Couleur du texte */
+}
+
+/* Style pour les liens de navigation */
+nav ul {
+  list-style-type: none; /* Supprimer les puces */
+  margin-top: 10px; /* Ajouter de l'espace en haut */
+}
+
+nav ul li {
+  display: inline; /* Afficher en ligne */
+  margin-right: 10px; /* Ajouter de l'espace entre les éléments */
+}
+
+nav ul li a {
+  text-decoration: none; /* Supprimer la décoration du texte */
+  color: #fff; /* Couleur du texte */
+  padding: 5px 10px; /* Ajouter de l'espace intérieur */
+  border-radius: 5px; /* Ajouter des coins arrondis */
+  background-color: #000000; /* Couleur de fond */
+}
+
+nav ul li a:hover {
+  background-color: #000000; /* Changement de couleur au survol */
+}
+
+/* Style pour le contenu principal */
+.content {
+  padding: 20px; /* Ajouter de l'espace intérieur */
+  background-color: #fff; /* Couleur de fond */
+  border-radius: 5px; /* Ajouter des coins arrondis */
+}
+
+/* Style pour le formulaire */
+.form {
+  max-width: 400px; /* Largeur maximale */
+  margin: auto; /* Centrer le formulaire */
+  background-color: blue;
+  color: purple;
+}
+
+/* Style pour les boutons */
+.button {
+  padding: 10px 20px; /* Ajouter de l'espace intérieur */
+  border: none; /* Supprimer les bordures */
+  border-radius: 5px; /* Ajouter des coins arrondis */
+  background-color: #3300b3; /* Couleur de fond */
+  color: purple; /* Couleur du texte */
+  cursor: pointer; 
+}
+
+.button:hover {
+  background-color: #3300b3;
+}
+
+link {
+  color: purple;
 }

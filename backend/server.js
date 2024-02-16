@@ -9,8 +9,8 @@ app.use(cors());
 
 const dataManager = new DataManager(
   "localhost",
-  "biblio_manga",
   "root",
+  "solene1209?",
   "biblio"
 );
 
