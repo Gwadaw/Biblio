@@ -6,11 +6,10 @@ const MangaLibrary = () => {
   const [mangas, setMangas] = useState([]);
   const [title, setTitle] = useState("");
   const [bookNumber, setBookNumber] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState(null); // Ajout du state pour l'image
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fonction pour charger la liste des mangas depuis le serveur
     const fetchMangas = async () => {
       try {
         const response = await axios.get("http://localhost:3001/biblio");
@@ -20,25 +19,23 @@ const MangaLibrary = () => {
       }
     };
 
-    // Appelle la fonction de chargement des mangas au chargement du composant
     fetchMangas();
   }, []);
 
   const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+    setImage(e.target.files[0]); // Met à jour le state avec le fichier image sélectionné
   };
 
   const handleAddManga = async () => {
-    if (!title || !bookNumber || !image) {
+    if (!title || !bookNumber || !image) { // Vérifie si le titre, le numéro de livre et l'image sont renseignés
       setError("Veuillez remplir tous les champs");
       return;
     }
 
-    // Créer un objet FormData pour envoyer les données multipart
     const formData = new FormData();
     formData.append("title", title);
     formData.append("bookNumber", bookNumber);
-    formData.append("image", image);
+    formData.append("image", image); // Ajoute l'image au FormData
 
     try {
       const response = await axios.post("http://localhost:3001/biblio", formData, {
@@ -46,12 +43,10 @@ const MangaLibrary = () => {
           "Content-Type": "multipart/form-data"
         }
       });
-      // Ajouter le nouveau manga à la liste
       setMangas([...mangas, response.data.manga]);
-      // Réinitialiser les champs
       setTitle("");
       setBookNumber("");
-      setImage(null);
+      setImage(null); // Réinitialise l'état de l'image
       setError("");
     } catch (error) {
       console.error("Error adding manga:", error);
@@ -76,7 +71,7 @@ const MangaLibrary = () => {
                   <Form.Label>Numéro du livre</Form.Label>
                   <Form.Control type="text" placeholder="Numéro du livre" value={bookNumber} onChange={(e) => setBookNumber(e.target.value)} />
                 </Form.Group>
-                <Form.Group controlId="image">
+                <Form.Group controlId="image"> {/* Champ pour sélectionner une image */}
                   <Form.Label>Image</Form.Label>
                   <Form.Control type="file" onChange={handleImageChange} />
                 </Form.Group>
@@ -91,7 +86,6 @@ const MangaLibrary = () => {
         {mangas.map((manga, index) => (
           <Col xs={12} md={4} key={index}>
             <Card className="mb-3">
-              <Card.Img variant="top" src={manga.image} alt={manga.title} />
               <Card.Body>
                 <Card.Title>{manga.title}</Card.Title>
                 <Card.Text>
