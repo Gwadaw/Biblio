@@ -8,70 +8,71 @@
 /* Style de base pour le corps de la page */
 body {
   font-family: Arial, sans-serif;
-  background-color: #000000; /* Couleur de fond */
-  color: #ffffff; /* Couleur du texte principal */
+  background-color: #272727;
+  color: #ffffff; 
 }
 
 /* Style pour le conteneur principal */
 .App {
-  max-width: 800px; /* Largeur maximale */
-  margin: 0 auto; /* Centrer le conteneur */
-  padding: 20px; /* Ajouter de l'espace intérieur */
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px; 
 }
 
 /* Style pour l'en-tête */
 .App-header {
-  background-color: #000000; /* Couleur de fond */
-  padding: 20px; /* Ajouter de l'espace intérieur */
-  text-align: center; /* Centrer le texte */
-  color: #fff; /* Couleur du texte */
+  background-color: #000000;
+  padding: 20px;
+  text-align: center; 
+  color: #fff; 
 }
 
 /* Style pour les liens de navigation */
 nav ul {
-  list-style-type: none; /* Supprimer les puces */
-  margin-top: 10px; /* Ajouter de l'espace en haut */
+  list-style-type: none;
+  margin-top: 10px; 
 }
 
 nav ul li {
-  display: inline; /* Afficher en ligne */
-  margin-right: 10px; /* Ajouter de l'espace entre les éléments */
+  display: inline; 
+  margin-right: 10px; 
 }
 
 nav ul li a {
-  text-decoration: none; /* Supprimer la décoration du texte */
-  color: #fff; /* Couleur du texte */
-  padding: 5px 10px; /* Ajouter de l'espace intérieur */
-  border-radius: 5px; /* Ajouter des coins arrondis */
-  background-color: #000000; /* Couleur de fond */
+  text-decoration: none; 
+  color: #fff; 
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  background-color: #000000; 
 }
 
 nav ul li a:hover {
-  background-color: #000000; /* Changement de couleur au survol */
+  background-color: #000000; 
 }
 
 /* Style pour le contenu principal */
 .content {
-  padding: 20px; /* Ajouter de l'espace intérieur */
-  background-color: #fff; /* Couleur de fond */
-  border-radius: 5px; /* Ajouter des coins arrondis */
+  padding: 20px;
+  background-color: #fff; 
+  border-radius: 5px; 
 }
 
 /* Style pour le formulaire */
 .form {
-  max-width: 400px; /* Largeur maximale */
-  margin: auto; /* Centrer le formulaire */
-  background-color: blue;
-  color: purple;
+  padding-top: 5%;
+  max-width: 800px;
+  margin: auto; 
+  background-color: #272727;
+  color: rgb(255, 255, 255);
 }
 
 /* Style pour les boutons */
 .button {
-  padding: 10px 20px; /* Ajouter de l'espace intérieur */
-  border: none; /* Supprimer les bordures */
-  border-radius: 5px; /* Ajouter des coins arrondis */
-  background-color: #3300b3; /* Couleur de fond */
-  color: purple; /* Couleur du texte */
+  padding: 10px 20px; 
+  border: none; 
+  border-radius: 5px; 
+  background-color: #3300b3; 
+  color: rgb(255, 255, 255); 
   cursor: pointer; 
 }
 
@@ -80,5 +81,5 @@ nav ul li a:hover {
 }
 
 link {
-  color: purple;
+  color: rgb(255, 255, 255);
 }

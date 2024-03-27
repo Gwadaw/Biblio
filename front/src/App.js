@@ -1,17 +1,27 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import Login from "./login";
 import Signup from "./signup";
-import Button from 'react-bootstrap/Button';
+import MangaLibrary from "./MangaLibrary";
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Vérifier si un token existe dans le stockage local
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLoggedIn(true);
+    }
+  }, []);
 
   const handleLogin = () => {
     setLoggedIn(true);
   };
 
   const handleLogout = () => {
+    // Supprimer le token du stockage local lors de la déconnexion
+    localStorage.removeItem("token");
     setLoggedIn(false);
   };
 
@@ -19,9 +29,11 @@ const App = () => {
     <Router>
       <div className="App">
         <header className="App-header">
-        <Button variant="primary"><Link to="/">Accueil</Link></Button>{' '}
-        <Button variant="secondary"><Link to="/login">Connexion</Link></Button>{' '}
-        <Button variant="success"><Link to="/signup">Inscription</Link></Button>{' '}
+          <Link to="/" className="btn btn-primary">Accueil</Link>{' '}
+          {!isLoggedIn && <Link to="/login" className="btn btn-secondary">Connexion</Link>}{' '}
+          {!isLoggedIn && <Link to="/signup" className="btn btn-success">Inscription</Link>}{' '}
+          {isLoggedIn && <Link to="/biblio" className="btn btn-success">Biblio</Link>}
+          {isLoggedIn && <button onClick={handleLogout} className="btn btn-danger">Déconnexion</button>}
         </header>
         <Routes>
           <Route
@@ -39,9 +51,11 @@ const App = () => {
           />
           <Route
             path="/login"
-            element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
+            element={<Login onLogin={handleLogin} />}
           />
           <Route path="/signup" element={<Signup />} />
+          {/* Utilisation de la route /biblio avec une condition ternaire */}
+          <Route path="/biblio" element={isLoggedIn ? <MangaLibrary /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>

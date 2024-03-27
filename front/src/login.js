@@ -7,26 +7,10 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
-  // eslint-disable-next-line
-  const [error, setError] = useState("");
-  const [redirection, setRedirection] = useState(false);
   const navigate = useNavigate();
-
-  // const requetePost = async () => {
-  //   try {
-  //     const response = await axios.post("http://localhost:3001/login", {
-  //       nickname,
-  //       password,
-  //     });
-  //     console.log(response.data);
-  //     setRedirection(true);
-  //   } catch (error) {
-  //     console.error("Erreur lors de la requête POST", error);
-  //   }
-  // };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -37,17 +21,21 @@ const Login = () => {
         password,
       });
 
-      console.log(response.data);
-      setRedirection(true);
+      const { data } = response;
+      const { token } = data;
+
+      // Stocker le token dans le stockage local
+      localStorage.setItem("token", token);
+
+      // Mettre à jour l'état isLoggedIn du composant App
+      onLogin();
+
+      // Rediriger vers la page principale après la connexion réussie
+      navigate("/");
     } catch (err) {
       console.error(err);
-      setError("Les informations d'identification sont invalides");
     }
   };
-
-  if (redirection) {
-    navigate("/"); //mettre une redirection vers la session
-  }
 
   return (
     <Container className="form">
