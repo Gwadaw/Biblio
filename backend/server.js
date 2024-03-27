@@ -4,6 +4,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const DataManager = require("./dataManager");
+const multer = require("multer"); // Module pour gérer les fichiers multipart
 
 const app = express();
 app.use(bodyParser.json());
@@ -17,6 +18,9 @@ const dataManager = new DataManager(
 );
 
 dataManager.Connect();
+
+// Middleware pour gérer les fichiers multipart
+const upload = multer({ dest: "uploads/" });
 
 // Route de connexion
 app.post("/login", (req, res) => {
@@ -86,16 +90,18 @@ app.post("/signup", (req, res) => {
 });
 
 // Route pour ajouter un manga dans la bibliothèque
-app.post("/biblio", (req, res) => {
+app.post("/biblio", upload.single("image"), (req, res) => {
   // Vérification de la présence du titre, de l'image et du numéro du livre
-  const { title, image, booknumber } = req.body;
+  const { title, booknumber } = req.body;
+  const image = req.file; // Le fichier image est envoyé en tant que multipart/form-data
+
   if (!title || !image || !booknumber) {
     return res.status(400).json({ error: "Title, image, and booknumber are required." });
   }
 
   // Requête SQL pour ajouter un nouveau manga
   const sql = "INSERT INTO manga (title, image, booknumber) VALUES (?, ?, ?)";
-  dataManager.query(sql, [title, image, booknumber], (err, data) => {
+  dataManager.query(sql, [title, image.path, booknumber], (err, data) => {
     if (err) {
       console.error("Error querying the database: " + err);
       return res.status(500).json({ error: "Internal Server Error" });
