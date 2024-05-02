@@ -10,6 +10,7 @@ import Col from "react-bootstrap/Col";
 const Login = ({ onLogin }) => {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -22,7 +23,7 @@ const Login = ({ onLogin }) => {
       });
 
       const { data } = response;
-      const { token } = data;
+      const { token, message } = data;
 
       // Stocker le token dans le stockage local
       localStorage.setItem("token", token);
@@ -32,8 +33,12 @@ const Login = ({ onLogin }) => {
 
       // Rediriger vers la page principale après la connexion réussie
       navigate("/");
+
+      // Afficher un message de succès si nécessaire
+      console.log(message);
     } catch (err) {
       console.error(err);
+      setError("Invalid credentials");
     }
   };
 
@@ -60,9 +65,7 @@ const Login = ({ onLogin }) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicCheckbox">
-              <Form.Check type="checkbox" label="Check me out" />
-            </Form.Group>
+            {error && <p style={{ color: "red" }}>{error}</p>}
             <Button variant="primary" type="submit">
               Submit
             </Button>
