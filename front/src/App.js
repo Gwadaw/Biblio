@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
 import Login from "./login";
 import Signup from "./signup";
-import MangaLibrary from "./MangaLibrary";
+import Biblio from "./biblio";
 
 const App = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -55,7 +55,7 @@ const App = () => {
           />
           <Route path="/signup" element={<Signup />} />
           {/* Utilisation de la route /biblio avec une condition ternaire */}
-          <Route path="/biblio" element={isLoggedIn ? <MangaLibrary /> : <Navigate to="/login" />} />
+          <Route path="/biblio" element={isLoggedIn ? <Biblio /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </Router>

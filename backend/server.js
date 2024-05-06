@@ -1,28 +1,41 @@
+require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const DataManager = require("./dataManager");
-const multer = require("multer"); // Module pour gérer les fichiers multipart
+const Joi = require('joi');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+const {
+  USER,
+  PASSWORD,
+  BDD,
+  HTTP_PORT,
+  JWT_SECRET
+} = process.env;
+
 const dataManager = new DataManager(
   "localhost",
-  "root",
-  "solene1209?",
-  "biblio"
+  USER,
+  PASSWORD,
+  BDD
 );
 
 dataManager.Connect();
 
-// Middleware pour gérer les fichiers multipart
-const upload = multer({ dest: "uploads/" });
+// Validation des données avec Joi
+const mangaSchema = Joi.object({
+  title: Joi.string().required(),
+  bookNumber: Joi.number().required(),
+  image: Joi.binary().encoding('base64').required()
+});
 
-// Route de connexion
 app.post("/login", (req, res) => {
   // Vérification de la présence du nickname et du mot de passe
   const { nickname, password } = req.body;
@@ -41,7 +54,6 @@ app.post("/login", (req, res) => {
     // Vérification du résultat de la requête
     if (data.length === 1) {
       const user = data[0];
-      // Comparaison des mots de passe hachés
       bcrypt.compare(password, user.password, (err, result) => {
         if (err) {
           console.error("Error comparing passwords: " + err);
@@ -49,7 +61,8 @@ app.post("/login", (req, res) => {
         }
         if (result) {
           // Utilisateur authentifié, génération du token JWT
-          const token = jwt.sign({ userId: user.id }, 'your_secret_key_here', { expiresIn: '1h' });
+          const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+          res.cookie('token', token, { httpOnly: true, secure: true }); 
           return res.json({ message: "Login successful", user, token });
         } else {
           return res.status(401).json({ error: "Invalid credentials" });
@@ -61,47 +74,43 @@ app.post("/login", (req, res) => {
   });
 });
 
-// Route de création de compte
+// Route de création de compte et vérification des champs
 app.post("/signup", (req, res) => {
-  // Vérification de la présence du nickname, de l'email et du mot de passe
   const { nickname, email, password } = req.body;
   if (!nickname || !email || !password) {
     return res.status(400).json({ error: "Nickname, email, and password are required." });
   }
 
-  // Hachage du mot de passe
-  bcrypt.hash(password, 10, (err, hashedPassword) => {
+  // Génération d'un sel aléatoire pour le hachage du mot de passe
+  const salt = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(password, salt);
+
+  // Requête SQL pour insérer un nouvel utilisateur
+  const sql = "INSERT INTO user (nickname, email, password) VALUES (?, ?, ?)";
+  dataManager.query(sql, [nickname, email, hashedPassword], (err, data) => {
     if (err) {
-      console.error("Error hashing password: " + err);
+      console.error("Error querying the database: " + err);
       return res.status(500).json({ error: "Internal Server Error" });
     }
 
-    // Requête SQL pour insérer un nouvel utilisateur
-    const sql = "INSERT INTO user (nickname, email, password) VALUES (?, ?, ?)";
-    dataManager.query(sql, [nickname, email, hashedPassword], (err, data) => {
-      if (err) {
-        console.error("Error querying the database: " + err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-
-      return res.json({ message: "Signup successful", user: data });
-    });
+    return res.json({ message: "Signup successful", user: data });
   });
 });
 
 // Route pour ajouter un manga dans la bibliothèque
-app.post("/biblio", upload.single("image"), (req, res) => {
-  // Vérification de la présence du titre, de l'image et du numéro du livre
-  const { title, booknumber } = req.body;
-  const image = req.file; // Le fichier image est envoyé en tant que multipart/form-data
-
-  if (!title || !image || !booknumber) {
-    return res.status(400).json({ error: "Title, image, and booknumber are required." });
+app.post("/MangaLibrary", (req, res) => {
+  console.log("Request body:", req.body);
+  const { error, value } = mangaSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
 
-  // Requête SQL pour ajouter un nouveau manga
-  const sql = "INSERT INTO manga (title, image, booknumber) VALUES (?, ?, ?)";
-  dataManager.query(sql, [title, image.path, booknumber], (err, data) => {
+  const { title, bookNumber, image } = value;
+
+  // Requête SQL pour insérer un nouveau manga
+  const sql = "INSERT INTO manga (title, booknumber, image, user_id) VALUES (?, ?, ?, ?)";
+  const userId = req.body.userId;
+  dataManager.query(sql, [title, bookNumber, image, userId], (err, data) => {
     if (err) {
       console.error("Error querying the database: " + err);
       return res.status(500).json({ error: "Internal Server Error" });
@@ -112,7 +121,7 @@ app.post("/biblio", upload.single("image"), (req, res) => {
 });
 
 // Route pour récupérer tous les mangas de la bibliothèque
-app.get("/biblio", (req, res) => {
+app.get("/MangaLibrary",(req, res) => {
   // Requête SQL pour sélectionner tous les mangas
   const sql = "SELECT * FROM manga";
   dataManager.query(sql, (err, data) => {
@@ -126,7 +135,13 @@ app.get("/biblio", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+// Middleware de gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
+
+const PORT = HTTP_PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
