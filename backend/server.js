@@ -6,16 +6,17 @@ const jwt = require('jsonwebtoken');
 const DataManager = require("./dataManager");
 const multer = require("multer");
 const path = require("path");
+require('dotenv').config(); // Charger les variables d'environnement
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
 const dataManager = new DataManager(
-  "localhost",
-  "root",
-  "solene1209?",
-  "biblio"
+  process.env.DB_HOST,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  process.env.DB_NAME
 );
 
 dataManager.Connect();
@@ -42,7 +43,7 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ error: "Token not provided" });
   }
 
-  jwt.verify(token.split(' ')[1], 'votre_cle_secrete_ici', (err, decoded) => {
+  jwt.verify(token.split(' ')[1], process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: "Invalid token" });
     }
@@ -72,7 +73,7 @@ app.post("/login", (req, res) => {
           return res.status(500).json({ error: "Erreur interne du serveur" });
         }
         if (result) {
-          const token = jwt.sign({ userId: user.id }, 'votre_cle_secrete_ici', { expiresIn: '1h' });
+          const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
           return res.json({ message: "Connexion réussie", user, token });
         } else {
           return res.status(401).json({ error: "Identifiants invalides" });
